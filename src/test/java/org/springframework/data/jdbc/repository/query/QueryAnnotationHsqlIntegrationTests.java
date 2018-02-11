@@ -166,6 +166,30 @@ public class QueryAnnotationHsqlIntegrationTests {
 
 	}
 
+	@Test // DATAJDBC-177
+	public void executeCustomModifyingQueryWithReturnTypeIsNumber() {
+
+		DummyEntity entity = dummyEntity("a");
+		repository.save(entity);
+
+		assertThat(repository.updateName(entity.id, "b")).isEqualTo(1);
+		assertThat(repository.updateName(9999L, "b")).isEqualTo(0);
+		assertThat(repository.findById(entity.id)).isPresent().map(e -> e.name).contains("b");
+
+	}
+
+	@Test // DATAJDBC-177
+	public void executeCustomModifyingQueryWithReturnTypeIsBoolean() {
+
+		DummyEntity entity = dummyEntity("a");
+		repository.save(entity);
+
+		assertThat(repository.deleteByName("a")).isTrue();
+		assertThat(repository.deleteByName("b")).isFalse();
+		assertThat(repository.findById(entity.id)).isNotPresent();
+
+	}
+
 	private DummyEntity dummyEntity(String name) {
 
 		DummyEntity entity = new DummyEntity();
@@ -208,6 +232,14 @@ public class QueryAnnotationHsqlIntegrationTests {
 
 		@Query("SELECT * FROM DUMMYENTITY")
 		Stream<DummyEntity> findAllWithReturnTypeIsStream();
+
+		@Modifying
+		@Query("UPDATE DUMMYENTITY SET name = :name WHERE id = :id")
+		int updateName(@Param("id") Long id, @Param("name") String name);
+
+		@Modifying
+		@Query("DELETE FROM DUMMYENTITY WHERE name = :name")
+		boolean deleteByName(@Param("name") String name);
 
 	}
 }

@@ -18,6 +18,8 @@ package org.springframework.data.jdbc.repository.support;
 import java.lang.reflect.Method;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -47,4 +49,15 @@ public class JdbcQueryMethod extends QueryMethod {
 
 		return queryAnnotation == null ? null : queryAnnotation.value();
 	}
+	
+	/**
+	 * Returns whether the finder is a modifying one.
+	 *
+	 * @return if it's a modifying query, return {@code true}.
+	 */
+	@Override
+	public boolean isModifyingQuery() {
+		return null != AnnotationUtils.findAnnotation(method, Modifying.class);
+	}
+
 }
