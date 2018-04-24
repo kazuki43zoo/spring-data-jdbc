@@ -15,9 +15,11 @@ cache:
 
 sudo: false
 
-services:
-  - docker
+#services:
+#  - docker
 
 install: true
 
-script: "mvn clean dependency:list test -Pall-dbs -Dsort -U"
+script:
+  - "docker --version"
+  - "mvn clean dependency:list test -Pall-dbs -Dsort -U"
