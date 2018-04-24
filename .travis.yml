@@ -21,5 +21,6 @@ sudo: false
 install: true
 
 script:
+  - "sudo service docker start"
   - "docker --version"
   - "mvn clean dependency:list test -Pall-dbs -Dsort -U"
